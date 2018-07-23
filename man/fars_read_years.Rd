@@ -19,7 +19,8 @@ The function returns the contents of the FARS files as a list of tibbles, one pe
 Reads a FARS file, identified just by its year, as a tibble.
 }
 \examples{
+\dontrun{
 fars_read_years(c(2013, 2014))
 fars_read_years(2013)
-
+}
 }

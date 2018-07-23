@@ -8,9 +8,10 @@ Description: functions for creating tibbles form files form the FARS files.
   FARS is the US National Highway Traffic Safety Administration's 
   Fatality Analysis Reporting System, that collects data from accidents in the US.
   This is for a Coursera Asignment.
-License: GPL-3
+License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
+Imports: maps, magrittr, tidyr, dplyr, readr, utils
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr

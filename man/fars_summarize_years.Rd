@@ -18,7 +18,8 @@ The function returns the summary of the FARS files for the given years,
 FARS files should be on the working directory.
 }
 \examples{
+\dontrun{
 fars_summarize_years(c(2013, 2014))
 fars_summarize_years(2013)
-
+}
 }

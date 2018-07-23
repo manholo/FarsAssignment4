@@ -1,6 +1,6 @@
 # FarsAssignment4
 
-The goal of FarsAssignment4 is to ...
+This is a test project for an assignment on the Coursera Course Advanced R Programming. The functions where provided to us, the assignment consist on commenting the code, create som tests, push it to GitHub and Travis and get this badge:
 
 ## Installation
 

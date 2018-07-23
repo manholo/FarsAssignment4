@@ -19,6 +19,7 @@ The function is a simple wrapper around readr::read_csv. An error is raised if t
 tbl_df is deprecated, use tibbble::as_tibble instead
 }
 \examples{
+\dontrun{
 fars_read("data/accident_2013.csv.bz2")
-
+}
 }

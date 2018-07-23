@@ -1,6 +1,5 @@
 
 
-
 #' Reads a CSV file as a tibble.
 #'
 #' The function is a simple wrapper around readr::read_csv. An error is raised if the file does not exits.
@@ -10,10 +9,12 @@
 #' @return The function returns the contents of the CSV file as a tibble.
 #'
 #' @examples
+#' \dontrun{
 #' fars_read("data/accident_2013.csv.bz2")
-#'
+#'}
 #' @note tbl_df is deprecated, use tibbble::as_tibble instead
 #'
+#' @import dplyr readr
 #' @export
 fars_read <- function(filename) {
         if(!file.exists(filename))
@@ -58,9 +59,11 @@ make_filename <- function(year) {
 #'  data file, a warning is shown and NULL is returned.
 #'
 #' @examples
+#' \dontrun{
 #' fars_read_years(c(2013, 2014))
 #' fars_read_years(2013)
-#'
+#'}
+#' @import dplyr
 #' @importFrom  magrittr %>%
 #' @export
 fars_read_years <- function(years) {
@@ -68,8 +71,8 @@ fars_read_years <- function(years) {
                 file <- make_filename(year)
                 tryCatch({
                         dat <- fars_read(file)
-                        dplyr::mutate(dat, year = year) %>%
-                                dplyr::select(MONTH, year)
+                        dplyr::mutate_(dat, year = ~ year) %>%
+                                dplyr::select_(.dots = c('MONTH', 'year'))
                 }, error = function(e) {
                         warning("invalid year: ", year)
                         return(NULL)
@@ -88,18 +91,20 @@ fars_read_years <- function(years) {
 #'  as number of accidents per month and year.
 #'
 #' @examples
+#' \dontrun{
 #' fars_summarize_years(c(2013, 2014))
 #' fars_summarize_years(2013)
-#'
+#'}
+#' @import tidyr
 #' @importFrom  magrittr %>%
 #'
 #' @export
 fars_summarize_years <- function(years) {
         dat_list <- fars_read_years(years)
         dplyr::bind_rows(dat_list) %>%
-                dplyr::group_by(year, MONTH) %>%
+                dplyr::group_by_(~ year, ~ MONTH) %>%
                 dplyr::summarize(n = n()) %>%
-                tidyr::spread(year, n)
+                tidyr::spread_(key_col = 'year', value_col = 'n')
 }
 
 #' Reads and plot FARS data for the given state and year.
@@ -118,9 +123,13 @@ fars_summarize_years <- function(years) {
 #' @return The function plots the map of accidents in a state from the FARS files for the given year.
 #'
 #' @examples
+#' \dontrun{
 #' fars_map_state( 25, 2014 )
-#'
+#' }
+#' @import graphics
 #' @import maps
+#' @import dplyr
+#'
 #' @export
 fars_map_state <- function(state.num, year) {
         filename <- make_filename(year)
@@ -129,7 +138,7 @@ fars_map_state <- function(state.num, year) {
 
         if(!(state.num %in% unique(data$STATE)))
                 stop("invalid STATE number: ", state.num)
-        data.sub <- dplyr::filter(data, STATE == state.num)
+        data.sub <- dplyr::filter_(data, ~ STATE == state.num)
         if(nrow(data.sub) == 0L) {
                 message("no accidents to plot")
                 return(invisible(NULL))

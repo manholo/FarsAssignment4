@@ -25,6 +25,7 @@ were registered for that year and state.
 FARS files should be on the working directory.
 }
 \examples{
+\dontrun{
 fars_map_state( 25, 2014 )
-
+}
 }

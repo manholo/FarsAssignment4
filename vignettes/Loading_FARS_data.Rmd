@@ -1,0 +1,81 @@
+---
+title: "Loading FARS Data"
+author: "Manuel castro"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Loading FARS Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_knit$set(
+root.dir = dirname(system.file("extdata", "accident_2013.csv.bz2", package = "FarsAssignment4"))
+)
+```
+
+The functions provided here use data from the US National Highway Traffic Safety Administration's [Fatality Analysis Reporting System](http://www.nhtsa.gov/Data/Fatality-Analysis-Reporting-System-(FARS)), which is a nationwide census providing the American public yearly data regarding fatal injuries suffered in motor vehicle traffic crashes.
+
+## Loading data by year
+
+The FARS files should be on the working directory, one per year. An example of the file name format is `accident_2013.csv.bz2` for data for year 2013, all US counties. The file may be compresed or not, but it should be in csv format. Example files are included in the package in directory 
+
+```{r eval=TRUE}
+system.file("extdata", "accident_2013.csv.bz2", package = "FarsAssignment4")
+```
+
+The only fields this package is interested on from the FARS data are the month and year of the accident, and for some functions also the county. But there are also functions to read all the filed in the file.
+
+The simplest way of loading month an year data is `fars_read_years` that takes as input a year or avector of years. the year maybe in any integer convertible type. 
+
+The function returns the contents of the FARS files as a list of tibbles, one per year, with just month and year per accident, for all the years in the given years list. If a year has no data file, a warning is shown and NULL is returned.
+
+```{r eval=TRUE}
+library(FarsAssignment4)
+head(fars_read_years(2013))
+```
+
+```{r eval=TRUE}
+head(fars_read_years(c(2013, 2014)))
+```
+
+
+The same data may be load and summarized with the function `fars_summarize_years`, that have the same parameters as `fars_read_years`, but it returns the summary of the FARS files for the given years,
+as number of accidents per month and year.
+
+```{r eval=TRUE}
+fars_summarize_years(c(2013, 2014))
+```
+
+
+## Loading full data
+
+To load the data as is in the file, two functions come handy:
+
+```{r eval=FALSE}
+f <- fars_read(make_filename(2013))
+```
+
+will load into f a tibble with data corresponding to the year 2013.
+
+
+## Mapping the FARS data
+
+The function `fars_map_state` reads and plot FARS data for the given state and year. The plots consist in the map of accidents in a state from the FARS files for the given year.
+
+The function check if the year data exists and the state -- identified by its state number -- exists in the year data, also sanitizes the location data, longitude and latitude. 
+
+The function stops with error if the given state number is not in the FARS data files for the given year. A message is shown if no accidents were registered for that year and state.
+
+```{r eval=TRUE, warning=FALSE}
+fars_map_state( 6, 2014 )
+```
+
+
+
+
